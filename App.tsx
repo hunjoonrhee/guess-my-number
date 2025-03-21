@@ -3,8 +3,20 @@ import { StyleSheet, ImageBackground, View } from 'react-native';
 import StartGameScreen from './screens/StartGameScreen';
 import { LinearGradient } from 'expo-linear-gradient';
 import Toast from 'react-native-toast-message';
+import { useState } from 'react';
+import GameScreen from './screens/GameScreen';
 
 export default function App() {
+  const [pickedUserInput, setPickedUserInput] = useState<number | undefined>(undefined);
+
+  const pickedUserInputHandler = (pickedNumber: number) => {
+    setPickedUserInput(pickedNumber);
+  };
+
+  let screen = <StartGameScreen pickedUserInputHandler={pickedUserInputHandler} />;
+  if (pickedUserInput) {
+    screen = <GameScreen />;
+  }
   return (
     <LinearGradient colors={['#4e0329', '#ddb52f']} style={styles.rootScreen}>
       <ImageBackground
@@ -14,7 +26,7 @@ export default function App() {
         imageStyle={styles.backgroundImage}
       >
         <Toast />
-        <StartGameScreen />
+        {screen}
       </ImageBackground>
     </LinearGradient>
   );

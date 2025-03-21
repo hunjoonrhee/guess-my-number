@@ -3,7 +3,11 @@ import PrimaryButton from '../components/PrimaryButton';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
-const StartGameScreen = () => {
+type StartGameScreenProps = {
+  pickedUserInputHandler: (pickedNumber: number) => void;
+};
+const StartGameScreen: React.FC<StartGameScreenProps> = (props: StartGameScreenProps) => {
+  const { pickedUserInputHandler } = props;
   const [numberInput, setNumberInput] = useState<string>('');
 
   const handleOnChange = (enteredText: string) => {
@@ -33,7 +37,7 @@ const StartGameScreen = () => {
       errorAtNegativNumber();
       setNumberInput('');
     } else {
-      console.log('hahaha', numberInput);
+      pickedUserInputHandler(parseInt(numberInput));
     }
   };
   return (
