@@ -1,17 +1,22 @@
 import { Text, View, StyleSheet } from 'react-native';
 
-const LogBox = () => {
+type LogValueProps = {
+  guessedValue: number;
+  count: number;
+};
+const LogValue: React.FC<LogValueProps> = (props: LogValueProps) => {
+  const { guessedValue, count } = props;
   return (
     <View style={styles.logContainer}>
       <View style={styles.logTextContainer}>
-        <Text style={styles.logNumer}> #3 </Text>
-        <Text style={styles.logText}> Logs...</Text>
+        <Text style={styles.logNumer}> # {count} </Text>
+        <Text style={styles.logText}> Opponent's Guess: {guessedValue}</Text>
       </View>
     </View>
   );
 };
 
-export default LogBox;
+export default LogValue;
 
 const styles = StyleSheet.create({
   logContainer: {

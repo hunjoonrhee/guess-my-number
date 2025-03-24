@@ -2,6 +2,8 @@ import { TextInput, View, StyleSheet } from 'react-native';
 import PrimaryButton from '../components/PrimaryButton';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
+import Title from '../components/Title';
+import Colors from '../constants/color';
 
 type StartGameScreenProps = {
   pickedUserInputHandler: (pickedNumber: number) => void;
@@ -41,25 +43,28 @@ const StartGameScreen: React.FC<StartGameScreenProps> = (props: StartGameScreenP
     }
   };
   return (
-    <View style={styles.inputContainer}>
-      <TextInput
-        style={styles.numberInput}
-        maxLength={2}
-        keyboardType="number-pad"
-        autoCapitalize="none"
-        autoCorrect={false}
-        value={numberInput}
-        onChangeText={handleOnChange}
-      />
-      <View style={styles.buttonsContainer}>
-        <View style={styles.buttonContainer}>
-          <PrimaryButton pressHandler={resetInput}>Reset</PrimaryButton>
-        </View>
-        <View style={styles.buttonContainer}>
-          <PrimaryButton pressHandler={confirmInput}>Confirm</PrimaryButton>
+    <>
+      <Title> Guess My Number </Title>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.numberInput}
+          maxLength={2}
+          keyboardType="number-pad"
+          autoCapitalize="none"
+          autoCorrect={false}
+          value={numberInput}
+          onChangeText={handleOnChange}
+        />
+        <View style={styles.buttonsContainer}>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton pressHandler={resetInput}>Reset</PrimaryButton>
+          </View>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton pressHandler={confirmInput}>Confirm</PrimaryButton>
+          </View>
         </View>
       </View>
-    </View>
+    </>
   );
 };
 
@@ -69,10 +74,10 @@ const styles = StyleSheet.create({
   inputContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 100,
     marginHorizontal: 24,
+    marginVertical: 48,
     padding: 16,
-    backgroundColor: '#3b021f',
+    backgroundColor: Colors.primary800,
     borderRadius: 8,
     elevation: 4,
     shadowColor: 'black',
@@ -81,14 +86,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
   },
   numberInput: {
+    fontFamily: 'open-sans-bold',
     height: 50,
     width: 50,
     fontSize: 32,
-    borderBottomColor: '#ddb52f',
+    borderBottomColor: Colors.accent500,
     borderBottomWidth: 2,
-    color: '#ddb52f',
+    color: Colors.accent500,
     marginVertical: 8,
-    fontWeight: 'bold',
     textAlign: 'center',
   },
   buttonsContainer: {
