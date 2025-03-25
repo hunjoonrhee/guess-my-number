@@ -1,12 +1,14 @@
-import { View, Text, StyleSheet, ScrollView, FlatList } from 'react-native';
-import PrimaryButton from '../components/PrimaryButton';
-import LogValue from '../components/LogValue';
+import { View, Text, StyleSheet, FlatList, useWindowDimensions } from 'react-native';
+import PrimaryButton from '../components/ui/PrimaryButton';
+import LogValue from '../components/game/LogValue';
 import { randomNumberGenerator } from '../utils/randomNumberGenerator';
 import { useEffect, useState } from 'react';
-import Toast from 'react-native-toast-message';
-import Title from '../components/Title';
+import Title from '../components/ui/Title';
 import { Ionicons } from '@expo/vector-icons';
-import Colors from '../constants/color';
+
+import NumberContainer from '../components/game/NumberContainer';
+import Card from '../components/ui/Card';
+import InstructionText from '../components/ui/InstructionText';
 type GameScreenProps = {
   pickedNumber: number;
   gameOverHandler: (isGameOver: boolean, logValue: LogValue) => void;
@@ -18,12 +20,11 @@ export interface LogValue {
 }
 const GameScreen: React.FC<GameScreenProps> = (props: GameScreenProps) => {
   const [hint, setHint] = useState<string | undefined>(undefined);
-  const [lastLogValue, setLastLogValue] = useState<LogValue | undefined>(undefined);
   const [logValues, setLogValues] = useState<LogValue[]>([
     { hint: undefined, value: randomNumberGenerator()!, count: 1 },
   ]);
-  const [count, setCount] = useState<number>(0);
   const { pickedNumber, gameOverHandler } = props;
+  const { width, height } = useWindowDimensions();
 
   const pressHint = (tip: string) => {
     setHint(tip);
@@ -62,14 +63,11 @@ const GameScreen: React.FC<GameScreenProps> = (props: GameScreenProps) => {
     }
   }, [logValues]);
 
-  return (
-    <View style={styles.screenContainer}>
-      <Title> Opponents's Guess</Title>
-      <View style={styles.randomNumberContainer}>
-        <Text style={styles.randomNumber}> {logValues[logValues.length - 1].value} </Text>
-      </View>
-      <View style={styles.hintContainer}>
-        <Text style={styles.hintText}> Higher or lower?</Text>
+  let content = (
+    <>
+      <NumberContainer logValues={logValues} />
+      <Card>
+        <InstructionText style={styles.instructionText}>Higher or lower?</InstructionText>
         <View style={styles.buttonsContainer}>
           <View style={styles.buttonContainer}>
             <PrimaryButton pressHandler={() => pressHint('minus')}>
@@ -82,13 +80,36 @@ const GameScreen: React.FC<GameScreenProps> = (props: GameScreenProps) => {
             </PrimaryButton>
           </View>
         </View>
-      </View>
-      <View style={styles.logsContainer}>
-        {/* {logValues.map((log) => (
-          <View key={log.count}>
-            <LogValue guessedValue={log.value} count={log.count} />
+      </Card>
+    </>
+  );
+
+  if (width > 500) {
+    content = (
+      <>
+        <View style={styles.buttonsContainerWide}>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton pressHandler={() => pressHint('minus')}>
+              <Ionicons name="remove-sharp" size={24} color="white" />
+            </PrimaryButton>
           </View>
-        ))} */}
+
+          <NumberContainer logValues={logValues} />
+          <View style={styles.buttonContainer}>
+            <PrimaryButton pressHandler={() => pressHint('plus')}>
+              <Ionicons name="add-sharp" size={24} color="white" />
+            </PrimaryButton>
+          </View>
+        </View>
+      </>
+    );
+  }
+
+  return (
+    <View style={styles.screenContainer}>
+      <Title> Opponents's Guess</Title>
+      {content}
+      <View style={styles.logsContainer}>
         <FlatList
           data={logValues}
           renderItem={(itemData) => (
@@ -106,42 +127,14 @@ export default GameScreen;
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
-  },
-  randomNumberContainer: {
-    borderColor: Colors.accent500,
-    borderRadius: 6,
-    borderWidth: 4,
-    paddingHorizontal: 4,
-    marginHorizontal: 48,
-    marginVertical: 40,
-    height: 100,
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  randomNumber: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: Colors.accent500,
-    textAlign: 'center',
+  instructionText: {
+    marginBottom: 12,
   },
-  hintText: {
-    fontFamily: 'open-sans',
-    fontSize: 32,
-    color: Colors.accent600,
-    textAlign: 'center',
-    marginVertical: 8,
-  },
-  hintContainer: {
-    marginHorizontal: 48,
-    marginVertical: 20,
-    padding: 16,
-    backgroundColor: Colors.primary800,
-    borderRadius: 8,
-    elevation: 4,
-    shadowColor: 'black',
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    shadowOpacity: 0.25,
+  buttonsContainerWide: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   buttonsContainer: {
     flexDirection: 'row',
@@ -151,6 +144,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   logsContainer: {
-    flex: 4,
+    flex: 1,
+    padding: 16,
   },
 });
